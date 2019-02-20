@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.5.21;
 /**
  * @title SafeMath
  * @dev Math operations with safety checks that throw on error
@@ -22,7 +22,6 @@ library SafeMath {
 
   function sub(uint256 a, uint256 b) internal pure returns (uint256) {
     assert(b <= a);
-    return a - b;
   }
 
   function add(uint256 a, uint256 b) internal pure returns (uint256) {
@@ -35,7 +34,6 @@ contract owned {
     address public owner;
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
     
-    function owned() public {
         owner = msg.sender;
     }
 
@@ -60,7 +58,6 @@ contract Pausable is owned {
   /**
    * @dev Modifier to make a function callable only when the contract is not paused.
    */
-  modifier whenNotPaused() {
     require(!paused);
     _;
   }
@@ -133,8 +130,6 @@ contract StandardToken is ERC20Token, Pausable {
         //Replace the if with this one instead.
         //if (balances[msg.sender] >= _value && balances[_to] + _value > balances[_to]) {
         if (balances[msg.sender] >= _value && _value > 0) {
-            balances[msg.sender] = balances[msg.sender].sub(_value);
-            balances[_to] = balances[_to].add(_value);
             emit Transfer(msg.sender, _to, _value);
             return true;
         } else { return false; }
@@ -144,9 +139,7 @@ contract StandardToken is ERC20Token, Pausable {
         //same as above. Replace this line with the following if you want to protect against wrapping uints.
         //if (balances[_from] >= _value && allowed[_from][msg.sender] >= _value && balances[_to] + _value > balances[_to]) {
         if (balances[_from] >= _value && allowed[_from][msg.sender] >= _value && _value > 0) {
-            balances[_to] = balances[_to].add(_value);
             balances[_from] = balances[_from].sub(_value);
-            allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
             emit Transfer(_from, _to, _value);
             return true;
         } else { return false; }
